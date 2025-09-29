@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CropMate</title>
+    <link rel="icon" href="https://img.freepik.com/premium-vector/agriculture-icon-logo-vector-design-template_827767-2376.jpg?w=826" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Fix overscroll issues */
+        html, body {
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            background: linear-gradient(135deg, #065f46, #047857, #10b981);
+            min-height: 100vh;
+        }
+
+        /* Background animation */
+        .animated-bg {
+            background: linear-gradient(-45deg, #065f46, #047857, #10b981, #059669);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles animation */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 120px; height: 120px; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(3) { width: 60px; height: 60px; left: 60%; animation-delay: 4s; }
+        .particle:nth-child(4) { width: 100px; height: 100px; left: 80%; animation-delay: 1s; }
+        .particle:nth-child(5) { width: 40px; height: 40px; left: 70%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Login container animations */
+        .login-container {
+            animation: slideInUp 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Form input styling */
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 0.875rem;
+            border: 2px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .form-label {
+            display: block;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Icon styling inside labels */
+        .form-label i {
+            margin-right: 6px;
+            color: #6b7280;
+        }
+
+        /* Button animations */
+        .login-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Link animations */
+        .auth-link {
+            color: #10b981;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: width 0.3s ease;
+        }
+
+        .auth-link:hover::after {
+            width: 100%;
+        }
+
+        .auth-link:hover {
+            transform: translateX(3px);
+        }
+
+        /* Logo animation */
+        .logo-container {
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Error messages */
+        .error-message {
+            animation: shake 0.5s ease-in-out;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #b91c1c;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Loading animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoRotate 2s linear infinite;
+            box-shadow: 0 30px 60px rgba(16, 185, 129, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        .loading-logo i {
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        @keyframes logoRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="animated-bg min-h-screen flex items-center justify-center relative">
+    <!-- Floating particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-logo">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="loading-text">Signing you in...</div>
+        <div class="loading-subtext">Please wait a moment</div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container w-full max-w-md p-6 rounded-2xl relative">
+        <!-- Logo and Header -->
+        <div class="text-center mb-6">
+            <div class="logo-container inline-block">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 rounded-full flex items-center justify-center mb-3 mx-auto shadow-lg">
+                    <i class="fas fa-leaf text-white text-xl"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-1">Welcome Back</h1>
+            <p class="text-gray-600 text-sm">Sign in to your CropMate account</p>
+        </div>
+
+        <!-- Error Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="post" id="loginForm" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email" class="form-label">
+                    <i class="fas fa-envelope"></i>Email Address
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-red-500 text-sm mt-1">
+                        {% for error in form.email.errors %}
+                            <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password" class="form-label">
+                    <i class="fas fa-lock"></i>Password
+                </label>
+                <div class="relative">
+                    {{ form.password }}
+                    <div class="absolute right-3 top-3.5 cursor-pointer" onclick="togglePassword()">
+                        <i id="passwordToggle" class="fas fa-eye text-gray-400 hover:text-green-600 transition-colors text-sm"></i>
+                    </div>
+                </div>
+                {% if form.password.errors %}
+                    <div class="text-red-500 text-sm mt-1">
+                        {% for error in form.password.errors %}
+                            <p><i class="fas fa-exclamation-circle mr-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center">
+                    <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
+                    <span class="ml-2 text-gray-600">Remember me</span>
+                </label>
+                <a href="#" class="auth-link font-medium">Forgot password?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-btn w-full py-3 px-6 text-white font-semibold rounded-lg">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Sign In
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="my-4 flex items-center">
+            <div class="flex-1 border-t border-gray-300"></div>
+            <span class="px-4 text-gray-500 text-sm">or</span>
+            <div class="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="text-center">
+            <p class="text-gray-600 text-sm">Don't have an account?</p>
+            <a href="{% url 'dashboard:signup' %}" class="auth-link font-semibold inline-block mt-1">
+                <i class="fas fa-user-plus mr-2"></i>Create Account
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-4 text-xs text-gray-500">
+            <p>&copy; 2025 CropMate. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
+
+        // Form submission with loading animation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            // Optional: Add a small delay to show the animation
+            setTimeout(() => {
+                // Form will submit naturally
+            }, 500);
+        });
+
+        // Input focus animations and label handling
+        document.querySelectorAll('.form-input').forEach(input => {
+            // Check if input has value on page load
+            function checkValue() {
+                if (input.value && input.value.length > 0) {
+                    input.classList.add('has-value');
+                } else {
+                    input.classList.remove('has-value');
+                }
+            }
+            
+            // Check value on page load
+            checkValue();
+            
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+                checkValue();
+            });
+            
+            input.addEventListener('input', function() {
+                checkValue();
+            });
+        });
+
+        // Auto-hide error messages
+        setTimeout(() => {
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(message => {
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    message.remove();
+                }, 300);
+            });
+        }, 5000);
+    </script>
+</body>
+
+</html>
