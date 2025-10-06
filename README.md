@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![CropMate Dashboard](Images/dashbaord.png)
 
 *An intelligent agricultural management system that empowers farmers with AI-powered insights, real-time monitoring, and data-driven recommendations.*
 
@@ -15,41 +14,44 @@
 
 </div>
 
-## 🌟 Overview
+##  Overview
 
 CropMate is a comprehensive agricultural management platform that combines modern web technologies with AI-powered insights to help farmers optimize their crop production. The system provides real-time environmental monitoring, intelligent recommendations, and predictive analytics to enhance farming efficiency and sustainability.
 
-## ✨ Features
+##  Features
 
-### 🤖 AI-Powered Virtual Agronomist
+###  AI-Powered Virtual Agronomist
 - **Smart Recommendations**: Get personalized advice using Groq's Llama-3.1 AI model
 - **Expert Knowledge**: Access agricultural best practices and solutions
 - **Natural Language Queries**: Ask questions in plain English
 - **Instant Responses**: Receive concise, actionable farming advice
 
-### 📊 Comprehensive Dashboard
+###  Comprehensive Dashboard
 - **Real-time Analytics**: Monitor crop performance and environmental conditions
 - **Interactive Charts**: Visualize production trends and sensor data
 - **Key Metrics**: Track success rates, active sensors, and crop statistics
 - **Activity Timeline**: Stay updated with recent system activities
 
-### 🌡️ Environmental Monitoring
+###  Environmental Monitoring
 - **Sensor Integration**: Monitor NPK levels, soil moisture, and temperature
 - **Weather Integration**: Real-time weather data and forecasting
 - **Environmental Alerts**: Receive notifications for critical conditions
 - **Data Visualization**: Comprehensive environmental data charts
 
-### 🔐 User Management
+###  User Management
 - **Secure Authentication**: Email-based login system
 - **User Dashboard**: Personalized farming insights
 - **Session Management**: Secure user sessions and data protection
 
-## 🖼️ Screenshots
+##  Screenshots
 
 <div align="center">
 
 ### Login Interface
 ![Login](Images/login.png)
+
+### Dashboard
+![CropMate Dashboard](Images/dashbaord.png)
 
 ### Sensor Data Monitoring
 ![Sensor Values](Images/values.png)
