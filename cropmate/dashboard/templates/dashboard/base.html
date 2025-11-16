@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CropMate{% endblock %}</title>
+    <link rel="icon" href="https://img.freepik.com/premium-vector/agriculture-icon-logo-vector-design-template_827767-2376.jpg?w=826" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    {% block extra_css %}{% endblock %}
+    <style>
+        html, body {
+            overflow-x: hidden;
+            overscroll-behavior: none;
+        }
+        
+        {% block base_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    {% block body_content %}{% endblock %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    toastr.success("{{ message|escapejs }}");
+                {% elif message.tags == 'error' %}
+                    toastr.error("{{ message|escapejs }}");
+                {% elif message.tags == 'warning' %}
+                    toastr.warning("{{ message|escapejs }}");
+                {% else %}
+                    toastr.info("{{ message|escapejs }}");
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

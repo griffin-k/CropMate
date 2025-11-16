@@ -1,0 +1,205 @@
+{% extends "dashboard/base_authenticated.html" %}
+
+{% block page_title %}Settings - CropMate{% endblock %}
+{% block sidebar_settings %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+.settings-card {
+    border-radius: 15px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.form-input:focus {
+    border-color: #10b981;
+    outline: none;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #10b981, #059669);
+    transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-cancel {
+    background: #6b7280;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #4b5563;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.toggle-password:hover {
+    color: #10b981;
+}
+</style>
+{% endblock %}
+
+{% block header_title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">Settings</h3>
+        <p class="text-gray-600">Manage your account information and preferences</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Profile Information -->
+        <div class="settings-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="mb-6 pb-4 border-b">
+                <h4 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-user-circle text-green-600 mr-3"></i>
+                    Profile Information
+                </h4>
+            </div>
+
+            <form method="post" action="{% url 'dashboard:update_profile' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                        <input type="text" name="username" value="{{ user.username }}" required
+                               class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ user.email }}" required
+                               class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="btn-cancel px-6 py-3 text-white rounded-lg font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-save px-6 py-3 text-white rounded-lg font-medium">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="settings-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="mb-6 pb-4 border-b">
+                <h4 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-lock text-green-600 mr-3"></i>
+                    Change Password
+                </h4>
+            </div>
+
+            <form method="post" action="{% url 'dashboard:change_password' %}">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="new_password1" id="new_password1" required
+                                       class="form-input w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                       placeholder="Enter new password">
+                                <i class="fas fa-eye toggle-password" onclick="togglePassword('new_password1', this)"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="new_password2" id="new_password2" required
+                                       class="form-input w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                       placeholder="Confirm new password">
+                                <i class="fas fa-eye toggle-password" onclick="togglePassword('new_password2', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="btn-cancel px-6 py-3 text-white rounded-lg font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-save px-6 py-3 text-white rounded-lg font-medium">
+                        <i class="fas fa-key mr-2"></i>Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Account Information -->
+        <div class="settings-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="mb-6 pb-4 border-b">
+                <h4 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-info-circle text-green-600 mr-3"></i>
+                    Account Information
+                </h4>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between items-center py-3 border-b">
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">Account Created</p>
+                        <p class="text-sm text-gray-500">{{ user.date_joined|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center py-3 border-b">
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">Last Login</p>
+                        <p class="text-sm text-gray-500">{{ user.last_login|date:"F d, Y - H:i" }}</p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center py-3">
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">Account Status</p>
+                        <p class="text-sm text-green-600 font-medium">Active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+document.querySelectorAll('.btn-cancel').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const form = this.closest('form');
+        if (form) {
+            form.reset();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{% block page_title %}CropMate{% endblock %}{% endblock %}
+
+{% block base_styles %}
+body {
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.sidebar {
+    transition: transform 0.3s ease-in-out;
+    background: linear-gradient(135deg, #065f46, #047857);
+    display: block !important;
+}
+
+@media (min-width: 1024px) {
+    .sidebar {
+        transform: translateX(0) !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 256px !important;
+        height: 100vh !important;
+        z-index: 50 !important;
+    }
+}
+
+.sidebar-item {
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+.sidebar-item.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid #10b981;
+}
+
+@media (max-width: 1023px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+{% endblock %}
+
+{% block body_content %}
+{% include "dashboard/components/sidebar.html" %}
+
+<div class="lg:ml-64 min-h-screen">
+    {% include "dashboard/components/header.html" %}
+    
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            mobileOverlay.classList.toggle('hidden');
+        });
+    }
+
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            mobileOverlay.classList.add('hidden');
+        });
+    }
+
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            if (item.href && (item.href.includes('logout') || item.href.includes('dashboard') || 
+                item.href.includes('weather') || item.href.includes('sensors') || 
+                item.href.includes('recommendations') || item.href.includes('agronomist') ||
+                item.href.includes('settings'))) {
+                return;
+            }
+            e.preventDefault();
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            item.classList.add('active');
+        });
+    });
+});
+</script>
+{% endblock %}

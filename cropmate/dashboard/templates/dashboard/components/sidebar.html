@@ -1,0 +1,39 @@
+<div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="sidebar fixed left-0 top-0 w-64 h-full z-50 p-6 lg:block">
+    <div class="flex items-center mb-8">
+        <i class="fas fa-leaf text-white text-2xl mr-3"></i>
+        <h1 class="text-white text-xl font-bold">CropMate</h1>
+    </div>
+
+    <nav class="space-y-2">
+        <a href="{% url 'dashboard:dashboard' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_dashboard %}{% endblock %}">
+            <i class="fas fa-tachometer-alt mr-3"></i>
+            Dashboard
+        </a>
+        <a href="{% url 'dashboard:agronomist' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_agronomist %}{% endblock %}">
+            <i class="fas fa-seedling mr-3"></i>
+            Agronomist
+        </a>
+        <a href="{% url 'dashboard:sensors' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_sensors %}{% endblock %}">
+            <i class="fas fa-thermometer-half mr-3"></i>
+            Sensor Data
+        </a>
+        <a href="{% url 'dashboard:recommendations' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_recommendations %}{% endblock %}">
+            <i class="fas fa-lightbulb mr-3"></i>
+            Recommendations
+        </a>
+        <a href="{% url 'dashboard:weather' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_weather %}{% endblock %}">
+            <i class="fas fa-cloud-sun mr-3"></i>
+            Weather
+        </a>
+        <a href="{% url 'dashboard:settings' %}" class="sidebar-item flex items-center text-white p-3 block {% block sidebar_settings %}{% endblock %}">
+            <i class="fas fa-cog mr-3"></i>
+            Settings
+        </a>
+        <a href="{% url 'dashboard:logout' %}" class="sidebar-item flex items-center text-white p-3 block">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            Logout
+        </a>
+    </nav>
+</aside>

@@ -8,6 +8,8 @@
     <link rel="icon" href="https://img.freepik.com/premium-vector/agriculture-icon-logo-vector-design-template_827767-2376.jpg?w=826" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
         /* Fix overscroll issues */
         html, body {
@@ -166,23 +168,6 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* Error messages */
-        .error-message {
-            animation: shake 0.5s ease-in-out;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #b91c1c;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
         /* Loading animation */
         .loading-overlay {
             position: fixed;
@@ -283,16 +268,6 @@
             <h1 class="text-2xl font-bold text-gray-800 mb-1">Welcome Back</h1>
             <p class="text-gray-600 text-sm">Sign in to your CropMate account</p>
         </div>
-
-        <!-- Error Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
 
         <!-- Login Form -->
         <form method="post" id="loginForm" class="space-y-6">
@@ -426,18 +401,47 @@
                 checkValue();
             });
         });
+    </script>
+    
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Configure Toastr
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
-        // Auto-hide error messages
-        setTimeout(() => {
-            const errorMessages = document.querySelectorAll('.error-message');
-            errorMessages.forEach(message => {
-                message.style.opacity = '0';
-                message.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    message.remove();
-                }, 300);
-            });
-        }, 5000);
+        // Display Django messages as Toastr notifications
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    toastr.success("{{ message|escapejs }}");
+                {% elif message.tags == 'error' %}
+                    toastr.error("{{ message|escapejs }}");
+                {% elif message.tags == 'warning' %}
+                    toastr.warning("{{ message|escapejs }}");
+                {% elif message.tags == 'info' %}
+                    toastr.info("{{ message|escapejs }}");
+                {% else %}
+                    toastr.info("{{ message|escapejs }}");
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </script>
 </body>
 

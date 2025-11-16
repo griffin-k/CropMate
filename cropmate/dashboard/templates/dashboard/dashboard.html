@@ -1,473 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "dashboard/base_authenticated.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CropMate</title>
-    <link rel="icon" href="https://img.freepik.com/premium-vector/agriculture-icon-logo-vector-design-template_827767-2376.jpg?w=826" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Font Awesome CDN for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for dashboard charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Fix overscroll issues */
-        html, body {
-            overflow-x: hidden;
-            overscroll-behavior: none;
-            background-color: #f3f4f6; /* Matching gray-100 background */
-        }
+{% block page_title %}Dashboard - CropMate{% endblock %}
+{% block sidebar_dashboard %}active{% endblock %}
 
-        html {
-            height: 100%;
-        }
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.dashboard-card {
+    border-radius: 15px;
+    animation: fadeInUp 0.6s ease-out;
+}
 
-        body {
-            min-height: 100vh;
-            background-color: #f3f4f6 !important; /* Ensure consistent background */
-        }
+.stats-card-green {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
 
-        /* Dashboard card animations */
-        .dashboard-card {
-            transition: all 0.3s ease-in-out;
-            border-radius: 15px;
-            animation: fadeInUp 0.6s ease-out;
-        }
+.stats-card-blue {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
 
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.stats-card-yellow {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
+.stats-card-purple {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+</style>
+{% endblock %}
 
-        /* Sidebar styling */
-        .sidebar {
-            transition: transform 0.3s ease-in-out;
-            background: linear-gradient(135deg, #065f46, #047857);
-            display: block !important; /* Ensure sidebar is always displayed */
-        }
+{% block header_title %}Dashboard Overview{% endblock %}
 
-        /* Desktop sidebar - always visible */
-        @media (min-width: 1024px) {
-            .sidebar {
-                transform: translateX(0) !important;
-                position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 256px !important;
-                height: 100vh !important;
-                z-index: 50 !important;
-            }
-        }
-
-        .sidebar-item {
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            margin: 5px 0;
-        }
-
-        .sidebar-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-
-        .sidebar-item.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-left: 4px solid #10b981;
-        }
-
-        /* Stats card gradient */
-        .stats-card-green {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .stats-card-blue {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-        }
-
-        .stats-card-yellow {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .stats-card-purple {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        }
-
-        /* Mobile sidebar toggle */
-        @media (max-width: 1023px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-        }
-
-        /* Chart container */
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-
-        /* Custom scrollbar for sidebar */
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-        }
-
-        /* Loading animation */
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-
-<body class="bg-gray-100">
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
-
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed left-0 top-0 w-64 h-full z-50 p-6 lg:block">
-        <!-- Logo -->
-        <div class="flex items-center mb-8">
-            <i class="fas fa-leaf text-white text-2xl mr-3"></i>
-            <h1 class="text-white text-xl font-bold">CropMate</h1>
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="dashboard-card stats-card-green text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-green-100 text-sm">Total Crops</p>
+                <p class="text-3xl font-bold">24</p>
+            </div>
+            <i class="fas fa-seedling text-4xl opacity-80"></i>
         </div>
-
-        <!-- Navigation Menu -->
-        <nav class="space-y-2">
-            <a href="{% url 'dashboard:dashboard' %}" class="sidebar-item active flex items-center text-white p-3 block">
-                <i class="fas fa-tachometer-alt mr-3"></i>
-                Dashboard
-            </a>
-            <a href="{% url 'dashboard:agronomist' %}" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-seedling mr-3"></i>
-                Agronomist
-            </a>
-            <a href="{% url 'dashboard:sensors' %}" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-thermometer-half mr-3"></i>
-                Sensor Data
-            </a>
-            <a href="#recommendations" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-lightbulb mr-3"></i>
-                Recommendations
-            </a>
-            <a href="{% url 'dashboard:weather' %}" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-cloud-sun mr-3"></i>
-                Weather
-            </a>
-            <a href="#reports" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-chart-bar mr-3"></i>
-                Reports
-            </a>
-            <a href="#settings" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-cog mr-3"></i>
-                Settings
-            </a>
-            <a href="{% url 'dashboard:logout' %}" class="sidebar-item flex items-center text-white p-3 block">
-                <i class="fas fa-sign-out-alt mr-3"></i>
-                Logout
-            </a>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="lg:ml-64 min-h-screen">
-        <!-- Top Navigation -->
-        <header class="bg-white shadow-md p-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-green-600 mr-4">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                    <h2 class="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <i class="fas fa-bell text-gray-600 hover:text-green-600 cursor-pointer text-xl"></i>
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-user-circle text-gray-600 text-2xl mr-2"></i>
-                        <span class="text-gray-700 font-medium">{{ user.username|title }}</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Dashboard Content -->
-        <main class="p-6">
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- Total Crops Card -->
-                <div class="dashboard-card stats-card-green text-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm">Total Crops</p>
-                            <p class="text-3xl font-bold">24</p>
-                        </div>
-                        <i class="fas fa-seedling text-4xl opacity-80"></i>
-                    </div>
-                </div>
-
-                <!-- Active Sensors Card -->
-                <div class="dashboard-card stats-card-blue text-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm">Active Sensors</p>
-                            <p class="text-3xl font-bold">8</p>
-                        </div>
-                        <i class="fas fa-thermometer-half text-4xl opacity-80"></i>
-                    </div>
-                </div>
-
-                <!-- Recommendations Card -->
-                <div class="dashboard-card stats-card-yellow text-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-yellow-100 text-sm">Recommendations</p>
-                            <p class="text-3xl font-bold">156</p>
-                        </div>
-                        <i class="fas fa-lightbulb text-4xl opacity-80"></i>
-                    </div>
-                </div>
-
-                <!-- Success Rate Card -->
-                <div class="dashboard-card stats-card-purple text-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-purple-100 text-sm">Success Rate</p>
-                            <p class="text-3xl font-bold">94%</p>
-                        </div>
-                        <i class="fas fa-chart-line text-4xl opacity-80"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts and Data Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <!-- Crop Production Chart -->
-                <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Crop Production Trends</h3>
-                        <i class="fas fa-chart-area text-green-600"></i>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="productionChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Sensor Data Chart -->
-                <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Environmental Conditions</h3>
-                        <i class="fas fa-thermometer-half text-blue-600"></i>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="sensorChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity and Quick Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Recent Activity -->
-                <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
-                        <i class="fas fa-history text-gray-600"></i>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center p-3 bg-green-50 rounded-lg">
-                            <i class="fas fa-seedling text-green-600 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">New crop recommendation generated</p>
-                                <p class="text-xs text-gray-500">2 minutes ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center p-3 bg-blue-50 rounded-lg">
-                            <i class="fas fa-thermometer-half text-blue-600 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">Sensor data updated</p>
-                                <p class="text-xs text-gray-500">5 minutes ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
-                            <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-800">Weather alert: Rain expected</p>
-                                <p class="text-xs text-gray-500">1 hour ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Quick Actions</h3>
-                        <i class="fas fa-bolt text-yellow-500"></i>
-                    </div>
-                    <div class="space-y-3">
-                        <button class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
-                            <i class="fas fa-plus mr-2"></i>
-                            New Recommendation
-                        </button>
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
-                            <i class="fas fa-download mr-2"></i>
-                            Export Report
-                        </button>
-                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
-                            <i class="fas fa-cog mr-2"></i>
-                            Settings
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        {% comment %} <!-- Footer -->
-        <footer class="bg-green-700 text-white text-center py-4 mt-8">
-            <p>&copy; 2025 CropMate . All Rights Reserved. Developed By Amna Asad</p>
-        </footer> {% endcomment %}
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        // Sidebar toggle functionality
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobileOverlay');
+    <div class="dashboard-card stats-card-blue text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-blue-100 text-sm">Active Sensors</p>
+                <p class="text-3xl font-bold">8</p>
+            </div>
+            <i class="fas fa-thermometer-half text-4xl opacity-80"></i>
+        </div>
+    </div>
 
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-            mobileOverlay.classList.toggle('hidden');
-        });
+    <div class="dashboard-card stats-card-yellow text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-yellow-100 text-sm">Recommendations</p>
+                <p class="text-3xl font-bold">156</p>
+            </div>
+            <i class="fas fa-lightbulb text-4xl opacity-80"></i>
+        </div>
+    </div>
 
-        mobileOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            mobileOverlay.classList.add('hidden');
-        });
+    <div class="dashboard-card stats-card-purple text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-purple-100 text-sm">Success Rate</p>
+                <p class="text-3xl font-bold">94%</p>
+            </div>
+            <i class="fas fa-chart-line text-4xl opacity-80"></i>
+        </div>
+    </div>
+</div>
 
-        // Sidebar navigation
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                // Don't prevent default for logout link
-                if (item.href && item.href.includes('logout')) {
-                    return; // Let the logout link work normally
-                }
-                
-                    // Don't prevent default for weather and dashboard links
-                    if (item.href && (item.href.includes('weather') || item.href.includes('dashboard') || item.href.includes('sensors'))) {
-                        return; // Let these links work normally
-                    }                e.preventDefault();
-                // Remove active class from all items
-                document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-                // Add active class to clicked item
-                item.classList.add('active');
-            });
-        });
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg lg:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+            <i class="fas fa-history text-gray-600"></i>
+        </div>
+        <div class="space-y-4">
+            <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                <i class="fas fa-seedling text-green-600 mr-3"></i>
+                <div>
+                    <p class="text-sm font-medium text-gray-800">New crop recommendation generated</p>
+                    <p class="text-xs text-gray-500">2 minutes ago</p>
+                </div>
+            </div>
+            <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                <i class="fas fa-thermometer-half text-blue-600 mr-3"></i>
+                <div>
+                    <p class="text-sm font-medium text-gray-800">Sensor data updated</p>
+                    <p class="text-xs text-gray-500">5 minutes ago</p>
+                </div>
+            </div>
+            <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
+                <div>
+                    <p class="text-sm font-medium text-gray-800">Weather alert: Rain expected</p>
+                    <p class="text-xs text-gray-500">1 hour ago</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Production Chart
-        const productionCtx = document.getElementById('productionChart').getContext('2d');
-        const productionChart = new Chart(productionCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Crop Yield (tons)',
-                    data: [12, 19, 15, 25, 22, 30],
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Sensor Data Chart
-        const sensorCtx = document.getElementById('sensorChart').getContext('2d');
-        const sensorChart = new Chart(sensorCtx, {
-            type: 'radar',
-            data: {
-                labels: ['Temperature', 'Humidity', 'pH Level', 'Soil Moisture', 'Nitrogen', 'Phosphorus'],
-                datasets: [{
-                    label: 'Current Levels',
-                    data: [28, 75, 6.5, 60, 45, 30],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 100
-                    }
-                }
-            }
-        });
-
-        // Auto-refresh data every 30 seconds
-        setInterval(() => {
-            // Simulate real-time data updates
-            const newData = productionChart.data.datasets[0].data.map(value => 
-                value + (Math.random() - 0.5) * 2
-            );
-            productionChart.data.datasets[0].data = newData;
-            productionChart.update('none');
-        }, 30000);
-    </script>
-</body>
-
-</html>
+    <div class="dashboard-card bg-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Quick Actions</h3>
+            <i class="fas fa-bolt text-yellow-500"></i>
+        </div>
+        <div class="space-y-3">
+            <button class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
+                <i class="fas fa-plus mr-2"></i>
+                New Recommendation
+            </button>
+            <button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
+                <i class="fas fa-download mr-2"></i>
+                Export Report
+            </button>
+            <button class="w-full bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg transition-colors flex items-center justify-center">
+                <i class="fas fa-cog mr-2"></i>
+                Settings
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

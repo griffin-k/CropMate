@@ -1,0 +1,21 @@
+<header class="bg-white shadow-md p-4">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-green-600 mr-4">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h2 class="text-xl font-semibold text-gray-800">{% block header_title %}Dashboard{% endblock %}</h2>
+        </div>
+        <div class="flex items-center space-x-4">
+            {% block header_extra %}{% endblock %}
+            <div class="relative">
+                <i class="fas fa-bell text-gray-600 hover:text-green-600 cursor-pointer text-xl"></i>
+                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-user-circle text-gray-600 text-2xl mr-2"></i>
+                <span class="text-gray-700 font-medium">{{ user.username|title }}</span>
+            </div>
+        </div>
+    </div>
+</header>
